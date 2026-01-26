@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+.creator {
+  font-size: 13px;
+  font-weight: 500;
+  background: linear-gradient(90deg, #888, #fff, #888);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+}
+
+@keyframes shine {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
+}
+
+/* Global styles */
+body {
+  background-color: #000;
+  color: #fff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Glow effect text */
+.glow-text {
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.glow-text-permanent {
+  text-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+}
