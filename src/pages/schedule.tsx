@@ -5,44 +5,44 @@ import AnimatedBackground from "../components/AnimatedBackground";
 
 const scheduleData = [
   
-  { name: "Pitch for Tomorrow - Open Innovations", date: "March 2", day: "Monday", venue: "Kongu Engineering College" },
-  { name: "Pitch for Tomorrow - Mobility", date: "March 3", day: "Tuesday", venue: "Kongu Engineering College" },
-  { name: "Pitch for Tomorrow - Deeptech", date: "March 4", day: "Wednesday", venue: "Kongu Engineering College" },
-  { name: "Pitch for Tomorrow - Clean & Green Tech", date: "March 5", day: "Thursday", venue: "Kongu Engineering College" },
-  { name: "Pitch for Tomorrow - Medtech", date: "March 6", day: "Friday", venue: "Kongu Engineering College" },
-  { name: "Pitch for Tomorrow - Agritech", date: "March 7", day: "Saturday", venue: "Kongu Engineering College" },
+  { name: "Pitch for Tomorrow - Open Innovations", date: "February 26" , venue: "Kongu Engineering College" },
+  { name: "Pitch for Tomorrow - Mobility & Industry 4.0", date: "February 20" , venue: "Kongu Engineering College" },
+  { name: "Pitch for Tomorrow - Deeptech", date: "February 21" , venue: "Kongu Engineering College" },
+  { name: "Pitch for Tomorrow - Clean & Green Tech", date: "February 24" , venue: "Kongu Engineering College" },
+   
+  { name: "Pitch for Tomorrow - Agritech & Healthcare", date: "February 25" , venue: "Kongu Engineering College" },
 
-  { name: "Mech Arena", date: "March 2", day: "Monday", venue: "Kongu Engineering College" },
+  { name: "Mech Arena", date: "February 19" , venue: "Kongu Engineering College" },
 
-  { name: "Webify", date: "March 2", day: "Monday", venue: "Kongu Engineering College" },
+  { name: "Webify", date: "February 19" , venue: "Kongu Engineering College" },
 
-  { name: "Electrical Odyssey", date: "March 3", day: "Tuesday", venue: "Kongu Engineering College" },
+  { name: "Electrical Odyssey", date: "February 20" , venue: "Kongu Engineering College" },
 
-  { name: "Game-a-thon", date: "March 3", day: "Tuesday", venue: "Kongu Engineering College" },
+  { name: "Game-a-thon", date: "February 20" , venue: "Kongu Engineering College" },
 
-  { name: "Master Chef Mania", date: "March 4", day: "Wednesday", venue: "Kongu Engineering College" },
+  { name: "Master Chef Mania", date: "February 21" , venue: "Kongu Engineering College" },
 
-  { name: "Buildscape", date: "March 4", day: "Wednesday", venue: "Kongu Engineering College" },
+  { name: "Buildscape", date: "February 21" , venue: "Kongu Engineering College" },
 
-  { name: "Stocks and Shares", date: "March 5", day: "Thursday", venue: "Kongu Engineering College" },
+  { name: "Stocks and Shares", date: "February 24" , venue: "Kongu Engineering College" },
 
-  { name: "B-Plan", date: "March 5", day: "Thursday", venue: "Kongu Engineering College" },
+  { name: "B-Plan", date: "February 24" , venue: "Kongu Engineering College" },
 
-  { name: "DETx Forum", date: "March 5", day: "Thursday", venue: "Kongu Engineering College" },
+  { name: "DETx Forum", date: "February 23,24", venue: "Kongu Engineering College" },
 
-  { name: "IPL Auction", date: "March 6", day: "Friday", venue: "Kongu Engineering College" },
+  { name: "IPL Auction", date: "February 25" , venue: "Kongu Engineering College" },
 
-  { name: "Product-Market Fit", date: "March 7", day: "Saturday", venue: "Kongu Engineering College" },
+  { name: "Product-Market Fit", date: "February 23", venue: "Kongu Engineering College" },
 
-  { name: "Business Market Fit", date: "March 7", day: "Saturday", venue: "Kongu Engineering College" },
+  { name: "Business Market Fit", date: "February 23", venue: "Kongu Engineering College" },
 
-  { name: "Rising Capital & Finance", date: "March 7", day: "Saturday", venue: "Kongu Engineering College" },
+  { name: "Rising Capital & Finance", date: "February 23", venue: "Kongu Engineering College" },
 
-  { name: "IPR & IP Management", date: "March 7", day: "Saturday", venue: "Kongu Engineering College" },
+  { name: "IPR & IP Management", date: "February 23", venue: "Kongu Engineering College" },
 
-  { name: "Startup Legal & Ethical", date: "March 7", day: "Saturday", venue: "Kongu Engineering College" },
+  { name: "Startup Legal & Ethical", date: "February 23", venue: "Kongu Engineering College" },
 
-  { name: "திரை-Trivia (Short Film)", date: "March 2 - 7", day: "March 2 - 7", venue: "Kongu Engineering College" },
+  { name: "திரை-Trivia (Short Film)", date: "February 19-26", venue: "Kongu Engineering College" },
   
 ];
 

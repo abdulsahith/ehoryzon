@@ -232,7 +232,7 @@ export function EventRegisterForm({ event }: { event?: any }) {
       // ✅ payment file (first file only)
       if (screenshots[0]) fd.append("payment_screenshots", screenshots[0]);
 
-      const res = await fetch(`https://sahith.xyz/${event.slug}/register/`, {
+      const res = await fetch(`https://sixter.xyz/${event.slug}/register/`, {
         method: "POST",
         body: fd,
       });
@@ -307,8 +307,8 @@ export function EventRegisterForm({ event }: { event?: any }) {
               href={event?.contactRight ? `tel:${event.contactRight}` : "tel:+919999999998"}
               className="flex-1 max-w-[47%] inline-flex flex-col items-center justify-center gap-1 rounded-full px-5 py-2 bg-white/10 backdrop-blur-md text-white/85 hover:bg-yellow-400 hover:text-black transition"
             >
-              <div className="text-sm font-medium text-white">{event?.contactRightName ?? "Coordinator"}</div>
-              <div className="text-sm font-medium text-white">{event?.contactRight ?? "+91 99999 99998"}</div>
+              <div className="text-sm font-medium text-white">{event?.contactRightName ?? ""}</div>
+              <div className="text-sm font-medium text-white">{event?.contactRight ?? ""}</div>
             </a>
           </div>
         </div>
@@ -350,17 +350,19 @@ export function EventRegisterForm({ event }: { event?: any }) {
                 >
                   Intra-College (KEC)
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setCollegeType("inter")}
-                  className={`flex-1 py-3 px-4 rounded-2xl font-semibold transition ${
-                    collegeType === "inter"
-                      ? "bg-yellow-400 text-black border border-yellow-400"
-                      : "bg-black/40 border border-yellow-600/20 text-white hover:border-yellow-500/60"
-                  }`}
-                >
-                  Inter-College
-                </button>
+                {event?.slug !== "thirai-trivia" && (
+                  <button
+                    type="button"
+                    onClick={() => setCollegeType("inter")}
+                    className={`flex-1 py-3 px-4 rounded-2xl font-semibold transition ${
+                      collegeType === "inter"
+                        ? "bg-yellow-400 text-black border border-yellow-400"
+                        : "bg-black/40 border border-yellow-600/20 text-white hover:border-yellow-500/60"
+                    }`}
+                  >
+                    Inter-College
+                  </button>
+                )}
               </div>
               {!collegeType && <p className="mt-2 text-xs text-yellow-300">Please select your participation type to continue</p>}
             </div>

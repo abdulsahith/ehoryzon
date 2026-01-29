@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const EventCountdownPortal = () => {
-  const eventStartDate = new Date("2026-03-02");
+  const eventStartDate = new Date("2026-02-19");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [timeRemaining, setTimeRemaining] = useState({
     days: 0,

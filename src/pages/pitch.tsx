@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
+import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Trash2, Upload } from "lucide-react";
 
@@ -16,10 +16,10 @@ const TRL_OPTIONS = [3, 4, 5, 6, 7, 8, 9];
 // ✅ Replace these with your exact 5 themes
 const THEME_OPTIONS = [
   { value: "Mobility & Industry 4.0", label: "Mobility & Industry 4.0" },
+  { value: "Clean and green Tech (sustainability)", label: "Clean and green Tech (sustainability)" },
+  { value: "AI and Deeptech", label: "AI and Deeptech" },
   { value: "Agritech and healthcare", label: "Agritech and healthcare" },
-  { value: "AI and Deep Tech", label: "AI and Deep Tech" },
-  { value: "Cleanand green Tech - Sustainability", label: "Cleanand green Tech - Sustainability" },
-  { value: "Open Innovation", label: "Open Innovation" },
+  { value: "Open innovation", label: "Open innovation" },
 ];
 
 const emptyMember = (): TeamMember => ({
@@ -47,6 +47,25 @@ export default function PitchRegister() {
   const canAdd = members.length < 4;
   const canRemove = members.length > 2;
 
+  // ✅ NEW: pitch description + coordinators (same style as other events)
+  const pitchDescriptionLines = useMemo(
+    () => [
+      "The ultimate startup showcase and innovation challenge.",
+      "Present your idea, product, or prototype to an expert panel and compete for the prize pool.",
+      "Choose a theme, submit your abstract as PDF, and register as a team (2–4 members).",
+    ],
+    []
+  );
+
+  const coordinatorLeftName = "SaiSanjay M K";
+  const coordinatorLeftPhone = "+91 9080938997";
+  const coordinatorRightName = "Pragatheeswari ";
+  const coordinatorRightPhone = "+91 6374040356";
+
+  // ✅ success popup (no alert) - like other event register
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("Pitch registered successfully!");
+
   const abstractLabel = useMemo(() => {
     if (!abstractFile) return "Upload Abstract (PDF)";
     return abstractFile.name;
@@ -73,13 +92,13 @@ export default function PitchRegister() {
   const validate = () => {
     if (!teamName.trim()) return "Team name is required.";
     if (!abstractFile) return "Abstract PDF is required.";
-    if (abstractFile) {
-  const isPdf =
-    abstractFile.type === "application/pdf" ||
-    abstractFile.name.toLowerCase().endsWith(".pdf");
-  if (!isPdf) return "Abstract must be a PDF file.";
-}
 
+    if (abstractFile) {
+      const isPdf =
+        abstractFile.type === "application/pdf" ||
+        abstractFile.name.toLowerCase().endsWith(".pdf");
+      if (!isPdf) return "Abstract must be a PDF file.";
+    }
 
     if (members.length < 2 || members.length > 4) return "Team must have 2 to 4 members.";
 
@@ -114,31 +133,38 @@ export default function PitchRegister() {
       formData.append("trl_level", String(trl));
       formData.append("theme", theme);
       formData.append("abstract_pdf", abstractFile!);
-      formData.append("members", JSON.stringify(members)); 
+      formData.append("members", JSON.stringify(members));
 
       // 🔁 Replace with your Django API
       const res = await fetch("https://sahith.xyz/pitch/register/", {
         method: "POST",
         body: formData,
-       
       });
 
-    if (!res.ok) {
-  const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        const contentType = res.headers.get("content-type");
 
-  let errorMessage = "Failed to submit registration.";
+        let errorMessage = "Failed to submit registration.";
 
-  if (contentType && contentType.includes("application/json")) {
-    const payload = await res.json();
-    errorMessage = JSON.stringify(payload);
-  } else {
-    errorMessage = await res.text();
-  }
+        if (contentType && contentType.includes("application/json")) {
+          const payload = await res.json();
+          errorMessage = JSON.stringify(payload);
+        } else {
+          errorMessage = await res.text();
+        }
 
-  throw new Error(errorMessage);
-}
-      alert("Pitch registration submitted successfully!");
-      navigate("/");
+        throw new Error(errorMessage);
+      }
+
+      // ✅ show popup like other event register (no alert)
+      setSuccessMsg("Pitch registered successfully!");
+      setSuccessOpen(true);
+
+      // auto navigate like other template
+      setTimeout(() => {
+        if (window.history.length > 1) navigate(-1);
+        else navigate("/");
+      }, 1200);
     } catch (err: unknown) {
       setError((err as Error).message || "Something went wrong.");
     } finally {
@@ -172,6 +198,40 @@ export default function PitchRegister() {
           <h1 className="text-3xl md:text-4xl font-black text-yellow-400">
             Register for Pitch Competition
           </h1>
+
+          {/* ✅ Event description + Coordinators like other events */}
+          <div className="mt-4">
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div className="text-white/80 space-y-1">
+                {pitchDescriptionLines.slice(0, 3).map((ln, i) => (
+                  <p key={i} className="leading-6">
+                    {ln}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex items-center justify-between gap-4">
+                <a
+                  href={`tel:${coordinatorLeftPhone}`}
+                  className="flex-1 max-w-[47%] inline-flex flex-col items-center justify-center gap-1 rounded-full px-5 py-2 bg-white/10 backdrop-blur-md text-white/85 hover:bg-yellow-400 hover:text-black transition"
+                >
+                  <div className="text-sm font-medium text-white">{coordinatorLeftName}</div>
+                  <div className="text-sm font-medium text-white">{coordinatorLeftPhone}</div>
+                </a>
+
+                <a
+                  href={`tel:${coordinatorRightPhone}`}
+                  className="flex-1 max-w-[47%] inline-flex flex-col items-center justify-center gap-1 rounded-full px-5 py-2 bg-white/10 backdrop-blur-md text-white/85 hover:bg-yellow-400 hover:text-black transition"
+                >
+                  <div className="text-sm font-medium text-white">{coordinatorRightName}</div>
+                  <div className="text-sm font-medium text-white">{coordinatorRightPhone}</div>
+                </a>
+              </div>
+            </div>
+          </div>
+
           <p className="mt-3 text-white/70">
             Team size: <span className="text-white/90 font-semibold">2–4 members</span>. Upload abstract as PDF.
           </p>
@@ -259,7 +319,11 @@ export default function PitchRegister() {
                   onClick={addMember}
                   disabled={!canAdd}
                   className={`inline-flex items-center gap-2 rounded-full px-4 py-2 font-bold transition
-                    ${canAdd ? "bg-yellow-400 text-black hover:shadow-[0_0_18px_rgba(251,191,36,0.25)]" : "bg-white/10 text-white/40 cursor-not-allowed"}
+                    ${
+                      canAdd
+                        ? "bg-yellow-400 text-black hover:shadow-[0_0_18px_rgba(251,191,36,0.25)]"
+                        : "bg-white/10 text-white/40 cursor-not-allowed"
+                    }
                   `}
                 >
                   <Plus size={18} /> Add Member
@@ -282,7 +346,11 @@ export default function PitchRegister() {
                         onClick={() => removeMember(idx)}
                         disabled={!canRemove}
                         className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm transition
-                          ${canRemove ? "bg-white/10 text-white/80 hover:bg-white/15" : "bg-white/5 text-white/30 cursor-not-allowed"}
+                          ${
+                            canRemove
+                              ? "bg-white/10 text-white/80 hover:bg-white/15"
+                              : "bg-white/5 text-white/30 cursor-not-allowed"
+                          }
                         `}
                       >
                         <Trash2 size={16} /> Remove
@@ -336,7 +404,11 @@ export default function PitchRegister() {
                 type="submit"
                 disabled={submitting}
                 className={`flex-1 rounded-full px-6 py-4 font-black transition
-                  ${submitting ? "bg-white/10 text-white/40 cursor-not-allowed" : "bg-yellow-400 text-black hover:shadow-[0_0_26px_rgba(251,191,36,0.25)]"}
+                  ${
+                    submitting
+                      ? "bg-white/10 text-white/40 cursor-not-allowed"
+                      : "bg-yellow-400 text-black hover:shadow-[0_0_26px_rgba(251,191,36,0.25)]"
+                  }
                 `}
               >
                 {submitting ? "Submitting..." : "Submit Pitch Registration"}
@@ -353,6 +425,38 @@ export default function PitchRegister() {
           </form>
         </div>
       </div>
+
+      {/* ✅ Success popup (no alert) */}
+      {successOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-md rounded-3xl border border-yellow-600/25 bg-black/90 p-6 shadow-xl">
+            <div className="text-xl font-extrabold text-yellow-400">Thank you ✅</div>
+            <div className="mt-2 text-white/80">{successMsg}</div>
+
+            <div className="mt-6 flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setSuccessOpen(false)}
+                className="rounded-full px-5 py-2 bg-white/10 text-white hover:bg-white/15"
+              >
+                Stay
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSuccessOpen(false);
+                  if (window.history.length > 1) navigate(-1);
+                  else navigate("/");
+                }}
+                className="rounded-full px-5 py-2 bg-yellow-400 text-black font-bold hover:bg-yellow-500"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -12,13 +12,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-
-
- 
 import herologo from "../assets/hero-logo.png";
 import kecLogo from "../assets/kec.png";
-import emdc from "../assets/EMDC Transpernt.png"
-import iic from "../assets/IIC_Logo_Transparent.png"
+import emdc from "../assets/EMDC Transpernt.png";
+import iic from "../assets/IIC_Logo_Transparent.png";
 
 import events from "../data/events";
 import { intraeventList, interEventList, workshopList, performingArtsList } from "../data/events";
@@ -36,7 +33,6 @@ import pitchVideo from "../assets/pitch.mp4";
 ------------------------ */
 const rand = (min, max) => Math.random() * (max - min) + min;
 const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
-
 
 function buildAcrossBolt() {
   let x = rand(0, 10);
@@ -213,7 +209,6 @@ function PosterCarousel({ images = [] }) {
         <div className="flex gap-6 pr-[120px]">
           {images.map((src, i) => (
             <div
-            
               key={i}
               className="snap-start shrink-0 w-[260px] sm:w-[320px] md:w-[340px] aspect-[3/4] rounded-2xl overflow-hidden border border-yellow-600/20 bg-black relative"
             >
@@ -266,19 +261,33 @@ export default function EHorizon() {
 
   // ✅ redirect helper
   const goToRegister = (url) => {
-    // use react-router navigation so we stay within the SPA
-    navigate(url);
+    // Check if URL is external (starts with http/https)
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      window.open(url, "_blank");
+    } else {
+      // use react-router navigation so we stay within the SPA
+      navigate(url);
+    }
   };
 
   // ✅ MAIN EVENT (standalone)
   const pitchEvent = {
     title: "PITCH FOR TOMORROW",
     description: "The ultimate startup showcase and innovation challenge",
-    date: "March 2 to 6, 2026",
+    date: "February 19 to 26, 2026",
     time: "Full Day Event",
     venue: "Maharaja Auditorium",
     image: "/assets/pitch/pitch-poster.jpg",
-      
+    pdfUrl: "/assets/pitch/pitch-description.pdf", 
+  };
+
+  const downloadPitchPdf = () => {
+    const link = document.createElement("a");
+    link.href = pitchEvent.pdfUrl;
+    link.setAttribute("download", "Pitch_For_Tomorrow_Description.pdf");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   // ✅ 10 standard events (each has Register) - loaded from `src/data/events`
@@ -327,11 +336,39 @@ export default function EHorizon() {
 
   const [heroIntro, setHeroIntro] = useState(true);
 
-useEffect(() => {
-  const t = setTimeout(() => setHeroIntro(false), 900); // animation duration
-  return () => clearTimeout(t);
-}, []);
+  useEffect(() => {
+    const t = setTimeout(() => setHeroIntro(false), 900); // animation duration
+    return () => clearTimeout(t);
+  }, []);
 
+  // Price Pool Animation
+  useEffect(() => {
+    const priceElement = document.getElementById("price-amount");
+    if (!priceElement) return;
+
+    let start = 100000;
+    const end = 150000;
+    const duration = 2000;
+    let current = start;
+
+    const startTime = Date.now();
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      current = Math.floor(start + (end - start) * progress);
+      priceElement.innerText = current.toLocaleString("en-IN");
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    const animationId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationId);
+  }, []);
 
   return (
     <>
@@ -516,10 +553,30 @@ useEffect(() => {
           {navCompact && (
             <div className="w-full flex justify-center pt-4 px-4">
               <div className="flex items-center justify-center gap-2 sm:gap-6 md:gap-8 lg:gap-24 rounded-full border border-white/15 bg-black/35 backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.55)] px-3 sm:px-6 md:px-12 lg:px-20 py-1.5 sm:py-2">
-                <img src={kecLogo} alt="KEC" className="h-5 sm:h-8 md:h-9 w-auto opacity-90" style={{ alignSelf: 'center' }} />
-                <img src={herologo} alt="E-Horyzon" className="h-5 sm:h-8 md:h-9 w-auto opacity-90" style={{ alignSelf: 'center' }} />
-                <img src={iic} alt="IIC" className="h-5 sm:h-8 md:h-9 w-auto opacity-90" style={{ alignSelf: 'center' }} />
-                <img src={emdc} alt="EMDC" className="h-5 sm:h-8 md:h-9 w-auto opacity-90" style={{ alignSelf: 'center' }} />
+                <img
+                  src={kecLogo}
+                  alt="KEC"
+                  className="h-5 sm:h-8 md:h-9 w-auto opacity-90"
+                  style={{ alignSelf: "center" }}
+                />
+                <img
+                  src={herologo}
+                  alt="E-Horyzon"
+                  className="h-5 sm:h-8 md:h-9 w-auto opacity-90"
+                  style={{ alignSelf: "center" }}
+                />
+                <img
+                  src={iic}
+                  alt="IIC"
+                  className="h-5 sm:h-8 md:h-9 w-auto opacity-90"
+                  style={{ alignSelf: "center" }}
+                />
+                <img
+                  src={emdc}
+                  alt="EMDC"
+                  className="h-5 sm:h-8 md:h-9 w-auto opacity-90"
+                  style={{ alignSelf: "center" }}
+                />
 
                 <button
                   onClick={() => navigate("/register/pitch")}
@@ -550,37 +607,33 @@ useEffect(() => {
             <div className="absolute inset-0 hero-overlay" />
           </div>
 
-          
-
-         <div
-  className={[
-    "relative z-10 flex flex-col items-center text-center px-6 transition-all duration-700 ease-out",
-    heroIntro ? "mt-0" : "-mt-16 md:-mt-24",
-  ].join(" ")}
->
-  <img
-    src={herologo}
-    alt="E-Horyzon"
-    className={[
-      "w-[420px] sm:w-[680px] md:w-[890px] lg:w-[980px] xl:w-[1100px] max-w-[94vw] h-auto object-contain",
-      "hero-lite-glow",
-      heroIntro ? "hero-pop" : "",
-      strikeGlow ? "hero-strike-glow" : "",
-    ].join(" ")}
-  />
-</div>
-
-
+          <div
+            className={[
+              "relative z-10 flex flex-col items-center text-center px-6 transition-all duration-700 ease-out",
+              heroIntro ? "mt-0" : "-mt-16 md:-mt-24",
+            ].join(" ")}
+          >
+            <img
+              src={herologo}
+              alt="E-Horyzon"
+              className={[
+                "w-[420px] sm:w-[680px] md:w-[890px] lg:w-[980px] xl:w-[1100px] max-w-[94vw] h-auto object-contain",
+                "hero-lite-glow",
+                heroIntro ? "hero-pop" : "",
+                strikeGlow ? "hero-strike-glow" : "",
+              ].join(" ")}
+            />
+          </div>
 
           {/* bottom meta */}
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 px-6 w-full">
             <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-white/90">
-              <div className="flex items-center gap-3 text-xs sm:text-sm md:text-xl lg:text-2xl font-semibold hover:text-yellow-400 md:hover:scale-110 transition-all duration-300 cursor-pointer">
-                <Calendar className="text-yellow-400 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
-                March 2-6, 2026
+              <div className="flex items-center gap-3 text-sm sm:text-base md:text-2xl lg:text-3xl font-semibold hover:text-yellow-400 md:hover:scale-110 transition-all duration-300 cursor-pointer">
+                <Calendar className="text-yellow-400 w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                February 19-26, 2026
               </div>
-              <div className="flex items-center gap-3 text-xs sm:text-sm md:text-xl lg:text-2xl font-semibold hover:text-yellow-400 md:hover:scale-110 transition-all duration-300 cursor-pointer">
-                <MapPin className="text-yellow-400 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+              <div className="flex items-center gap-3 text-sm sm:text-base md:text-2xl lg:text-3xl font-semibold hover:text-yellow-400 md:hover:scale-110 transition-all duration-300 cursor-pointer">
+                <MapPin className="text-yellow-400 w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8" />
                 Kongu Engineering College, Erode
               </div>
             </div>
@@ -616,7 +669,7 @@ useEffect(() => {
                     loop
                     playsInline
                     className="w-full h-full object-contain"
-                    style={{ animationPlayState: 'running', animationDuration: '0.67s' }}
+                    style={{ animationPlayState: "running", animationDuration: "0.67s" }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/35 to-black/10" />
                 </div>
@@ -630,9 +683,7 @@ useEffect(() => {
                     {pitchEvent.title}
                   </h3>
 
-                  <p className="mt-4 text-white/75 leading-relaxed">
-                    {pitchEvent.description}
-                  </p>
+                  <p className="mt-4 text-white/75 leading-relaxed">{pitchEvent.description}</p>
 
                   <div className="mt-6 grid sm:grid-cols-2 gap-4 text-white/80">
                     <div className="flex items-center gap-3">
@@ -657,12 +708,72 @@ useEffect(() => {
                       Register for Pitch <ArrowRight />
                     </button>
 
+                    {/* ✅ CHANGED: description button -> downloads PDF */}
                     <button
-                      onClick={() => scrollToSection("posters")}
+                      onClick={downloadPitchPdf}
                       className="px-8 py-4 rounded-full border border-white/15 bg-white/5 text-white/85 hover:bg-white/10 transition"
                     >
-                      View other events
+                      Event Description
                     </button>
+                  </div>
+
+                  {/* Price Pool Section */}
+                  <div className="mt-12 pt-8 border-t border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-8">
+                      <div className="price-pool-container">
+                        <h4 className="text-xl text-white/60 mb-2">Prize Pool</h4>
+                        <div className="price-pool-display">
+                          <span className="text-5xl font-bold text-white">
+                            ₹<span id="price-amount">100000</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* ✅ Separator + Themes on the right */}
+                      <div className="hidden sm:block w-px self-stretch bg-white/15" />
+
+                      <div className="flex-1">
+                        <h4 className="text-xl text-white/60 mb-3">Themes</h4>
+                        <ol className="space-y-2 text-white/80">
+                          <li>1. Mobility and Industry 4.0</li>
+                          <li>2. ⁠Clean and green Tech (sustainability)</li>
+                          <li>3. ⁠AI and Deeptech</li>
+                          <li>4. ⁠Agritech and healthcare</li>
+                          <li>5. ⁠Open innovation</li>
+                        </ol>
+                      </div>
+                    </div>
+
+                    <style>{`
+                      .price-pool-container {
+                        display: inline-block;
+                      }
+                      
+                      .price-pool-display {
+                        animation: glowEffect 2s ease-in-out infinite;
+                        cursor: pointer;
+                        transition: transform 0.3s ease;
+                      }
+                      
+                      .price-pool-display:hover {
+                        transform: scale(1.08);
+                      }
+                      
+                      @keyframes glowEffect {
+                        0% {
+                          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                          filter: brightness(1);
+                        }
+                        50% {
+                          text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 50px rgba(255, 255, 255, 0.5);
+                          filter: brightness(1.2);
+                        }
+                        100% {
+                          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                          filter: brightness(1);
+                        }
+                      }
+                    `}</style>
                   </div>
                 </div>
               </div>
@@ -674,7 +785,7 @@ useEffect(() => {
             {/* ✅ EVENTS */}
             <div id="posters" className="mt-20 mb-12">
               <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
-                <span>E-Horizon</span> <span>Events</span>
+                <span>E-Horyzon</span> <span>Events</span>
               </h3>
 
               {/* Date Filter */}
@@ -706,7 +817,9 @@ useEffect(() => {
 
               {/* ✅ FABEX SECTION - Show only if has events */}
               {(() => {
-                const filtered = intraeventList.filter((e) => !selectedDate || e.date === selectedDate || e.date === null);
+                const filtered = intraeventList.filter(
+                  (e) => !selectedDate || e.date === selectedDate || e.date === null
+                );
                 if (filtered.length === 0) return null;
                 return (
                   <>
@@ -723,302 +836,306 @@ useEffect(() => {
                           const isVisible = visibleCards.has(i);
 
                           return (
-                          <div
-                            key={i}
-                            ref={(el) => { cardRefs.current[i] = el }}
-                            data-index={i}
-                            className={[
-                              "relative rounded-2xl overflow-hidden border bg-black",
-                              "border-yellow-600/20 hover:border-yellow-400/50",
-                              "transition-all duration-700 ease-out will-change-transform",
-                              "hover:shadow-lg hover:shadow-yellow-300/30",
-                              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
-                            ].join(" ")}
-                            style={{ transitionDelay: `${Math.min(i, 6) * 90}ms` }}
-                          >
-                      <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300 hover:scale-105">
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                          <img
-                            src={e.image}
-                            alt={e.title}
-                            className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                            onError={(ev) => (ev.currentTarget.style.display = "none")}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
-                        </div>
-                      </div>
+                            <div
+                              key={i}
+                              ref={(el) => {
+                                cardRefs.current[i] = el;
+                              }}
+                              data-index={i}
+                              className={[
+                                "relative rounded-2xl overflow-hidden border bg-black",
+                                "border-yellow-600/20 hover:border-yellow-400/50",
+                                "transition-all duration-700 ease-out will-change-transform",
+                                "hover:shadow-lg hover:shadow-yellow-300/30",
+                                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
+                              ].join(" ")}
+                              style={{ transitionDelay: `${Math.min(i, 6) * 90}ms` }}
+                            >
+                              <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300 hover:scale-105">
+                                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                                  <img
+                                    src={e.image}
+                                    alt={e.title}
+                                    className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                                    onError={(ev) => (ev.currentTarget.style.display = "none")}
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+                                </div>
+                              </div>
 
-                      <div className="p-5">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <h4 className="text-lg font-extrabold text-white">
-                              {e.title}
-                            </h4>
-                            {e.date && (
-                              <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
-                            )}
-                          </div>
+                              <div className="p-5">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div>
+                                    <h4 className="text-lg font-extrabold text-white">{e.title}</h4>
+                                    {e.date && (
+                                      <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
+                                    )}
+                                  </div>
 
-                          <button
-                            onClick={() => goToRegister(e.registerUrl)}
-                            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
-                          >
-                            Register <ArrowRight size={16} />
-                          </button>
-                        </div>
+                                  <button
+                                    onClick={() => goToRegister(e.registerUrl)}
+                                    className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
+                                  >
+                                    Register <ArrowRight size={16} />
+                                  </button>
+                                </div>
 
-                        <p className="mt-2 text-sm text-white/60">
-                          Click register to book your slot.
-                        </p>
-                      </div>
-                    </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                );
-              })()}
-
-            {/* ✅ TECHNOPRENEUR SECTION - Show only if has events */}
-            {(() => {
-              const filtered = interEventList.filter((e) => !selectedDate || e.date === selectedDate || e.date === null);
-              if (filtered.length === 0) return null;
-              return (
-                <>
-                  <div className="mt-20 mb-12">
-                    <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
-                      <span>Technopreneur</span>
-                    </h3>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {interEventList
-                      .filter((e) => !selectedDate || e.date === selectedDate || e.date === null)
-                      .map((e, i) => {
-                        const baseIdx = intraeventList.length + i;
-                        const isVisible = visibleCards.has(baseIdx);
-
-                        return (
-                        <div
-                          key={baseIdx}
-                          ref={(el) => { cardRefs.current[baseIdx] = el }}
-                          data-index={baseIdx}
-                          className={[
-                            "relative rounded-2xl overflow-hidden border bg-black",
-                            "border-yellow-600/20 hover:border-yellow-400/50",
-                            "transition-all duration-700 ease-out will-change-transform",
-                            "hover:shadow-lg hover:shadow-yellow-300/30",
-                            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
-                          ].join(" ")}
-                          style={{ transitionDelay: `${Math.min(baseIdx, 12) * 90}ms` }}
-                        >
-                      <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300 hover:scale-105">
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                          <img
-                            src={e.image}
-                            alt={e.title}
-                            className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                            onError={(ev) => (ev.currentTarget.style.display = "none")}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
-                        </div>
-                      </div>
-
-                      <div className="p-5">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <h4 className="text-lg font-extrabold text-white">
-                              {e.title}
-                            </h4>
-                            {e.date && (
-                              <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
-                            )}
-                          </div>
-
-                          <button
-                            onClick={() => goToRegister(e.registerUrl)}
-                            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
-                          >
-                            Register <ArrowRight size={16} />
-                          </button>
-                        </div>
-
-                        <p className="mt-2 text-sm text-white/60">
-                          Click register to book your slot.
-                        </p>
-                      </div>
-                    </div>
-                    );
-                    })}
-                  </div>
-                </>
-              );
-            })()}
-
-            {/* ✅ WORKSHOPS SECTION - Show only if has events */}
-            {(() => {
-              const filtered = workshopList.filter((e) => !selectedDate || e.date === selectedDate || e.date === null);
-              if (filtered.length === 0) return null;
-              return (
-                <>
-                  <div className="mt-20 mb-12">
-                    <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
-                      <span>Talentia</span> <span>~ Workshops</span>
-                    </h3>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {workshopList
-                      .filter((e) => !selectedDate || e.date === selectedDate || e.date === null)
-                      .map((e, i) => {
-                        const baseIdx = intraeventList.length + interEventList.length + i;
-                        const isVisible = visibleCards.has(baseIdx);
-
-                        return (
-                          <div
-                            key={baseIdx}
-                            ref={(el) => { cardRefs.current[baseIdx] = el }}
-                            data-index={baseIdx}
-                            className={[
-                              "relative rounded-2xl overflow-hidden border bg-black",
-                              "border-yellow-600/20",
-                              "transition-all duration-700 ease-out will-change-transform",
-                              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
-                            ].join(" ")}
-                            style={{ transitionDelay: `${Math.min(baseIdx, 18) * 90}ms` }}
-                          >
-                      <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300">
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                          <img
-                            src={e.image}
-                            alt={e.title}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            onError={(ev) => (ev.currentTarget.style.display = "none")}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
-                        </div>
-                      </div>
-
-                      <div className="p-5">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <h4 className="text-lg font-extrabold text-white">
-                              {e.title}
-                            </h4>
-                            {e.date && (
-                              <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
-                            )}
-                          </div>
-
-                          <button
-                            onClick={() => goToRegister(e.registerUrl)}
-                            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
-                          >
-                            Register <ArrowRight size={16} />
-                          </button>
-                        </div>
-
+                                <p className="mt-2 text-sm text-white/60">
+                                  Click register to book your slot.
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        );
+                          );
                         })}
                     </div>
                   </>
                 );
               })()}
 
-            {(() => {
-              const filtered = performingArtsList.filter((e) => !selectedDate || e.date === selectedDate || e.date === null);
-              if (filtered.length === 0) return null;
-              return (
-                <>
-                  <div className="mt-20 mb-12">
-                    <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
-                      <span>Innovative Short Film</span> <span>/ Tribute Videos</span>
-                    </h3>
-                  </div>
-
-                  <div className="flex justify-center">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-fit">
-                    {performingArtsList
-                      .filter((e) => !selectedDate || e.date === selectedDate || e.date === null)
-                      .map((e, i) => {
-                        const baseIdx = intraeventList.length + interEventList.length + workshopList.length + i;
-                        const isVisible = visibleCards.has(baseIdx);
-                        
-                        // Staggered margin-top for masonry effect
-                        const staggerClasses = [
-                          "mt-0",      // Card 1
-                          "mt-16",     // Card 2
-                          "mt-8",      // Card 3
-                          "mt-20",     // Card 4
-                          "mt-28",     // Card 5
-                        ];
-                        const marginClass = staggerClasses[i % staggerClasses.length];
-
-                        return (
-                          <div
-                            key={baseIdx}
-                            ref={(el) => { cardRefs.current[baseIdx] = el }}
-                            data-index={baseIdx}
-                            className={[
-                              "relative rounded-2xl overflow-hidden border bg-black",
-                              "border-yellow-600/20 hover:border-yellow-400/50",
-                              "transition-all duration-700 ease-out will-change-transform",
-                              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
-                              marginClass,
-                              e.slug === "thirai-trivia" ? "col-span-1 md:col-span-4 lg:col-span-4 row-span-4" : "",
-                            ].join(" ")}
-                            style={{ transitionDelay: `${Math.min(baseIdx, 24) * 90}ms` }}
-                          >
-                      <div className={`${e.slug === "thirai-trivia" ? "aspect-[1/1.5]" : "aspect-[3/4]"} relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300`}>
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                          <img
-                            src={e.image}
-                            alt={e.title}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            onError={(ev) => (ev.currentTarget.style.display = "none")}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
-                        </div>
-                      </div>
-
-                      <div className="p-5">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <h4 className={`${e.slug === "thirai-trivia" ? "text-3xl md:text-5xl" : "text-lg"} font-extrabold text-white`}>
-                              {e.title}
-                            </h4>
-                            {e.date && (
-                              <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
-                            )}
-                          </div>
-
-                          <button
-                            onClick={() => goToRegister(e.registerUrl)}
-                            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
-                          >
-                            Register <ArrowRight size={16} />
-                          </button>
-                        </div>
-
-                        <p className="mt-2 text-sm text-white/60">
-                          Click register to book your slot.
-                        </p>
-                      </div>
+              {/* ✅ TECHNOPRENEUR SECTION - Show only if has events */}
+              {(() => {
+                const filtered = interEventList.filter(
+                  (e) => !selectedDate || e.date === selectedDate || e.date === null
+                );
+                if (filtered.length === 0) return null;
+                return (
+                  <>
+                    <div className="mt-20 mb-12">
+                      <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
+                        <span>Technopreneur</span>
+                      </h3>
                     </div>
-                        );
-                      })}
-                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {interEventList
+                        .filter((e) => !selectedDate || e.date === selectedDate || e.date === null)
+                        .map((e, i) => {
+                          const baseIdx = intraeventList.length + i;
+                          const isVisible = visibleCards.has(baseIdx);
+
+                          return (
+                            <div
+                              key={baseIdx}
+                              ref={(el) => {
+                                cardRefs.current[baseIdx] = el;
+                              }}
+                              data-index={baseIdx}
+                              className={[
+                                "relative rounded-2xl overflow-hidden border bg-black",
+                                "border-yellow-600/20 hover:border-yellow-400/50",
+                                "transition-all duration-700 ease-out will-change-transform",
+                                "hover:shadow-lg hover:shadow-yellow-300/30",
+                                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
+                              ].join(" ")}
+                              style={{ transitionDelay: `${Math.min(baseIdx, 12) * 90}ms` }}
+                            >
+                              <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300 hover:scale-105">
+                                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                                  <img
+                                    src={e.image}
+                                    alt={e.title}
+                                    className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                                    onError={(ev) => (ev.currentTarget.style.display = "none")}
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+                                </div>
+                              </div>
+
+                              <div className="p-5">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div>
+                                    <h4 className="text-lg font-extrabold text-white">{e.title}</h4>
+                                    {e.date && (
+                                      <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
+                                    )}
+                                  </div>
+
+                                  <button
+                                    onClick={() => goToRegister(e.registerUrl)}
+                                    className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
+                                  >
+                                    Register <ArrowRight size={16} />
+                                  </button>
+                                </div>
+
+                                <p className="mt-2 text-sm text-white/60">
+                                  Click register to book your slot.
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
                     </div>
                   </>
                 );
               })()}
 
-            </div>
+              {/* ✅ WORKSHOPS SECTION - Show only if has events */}
+              {(() => {
+                const filtered = workshopList.filter(
+                  (e) => !selectedDate || e.date === selectedDate || e.date === null
+                );
+                if (filtered.length === 0) return null;
+                return (
+                  <>
+                    <div className="mt-20 mb-12">
+                      <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
+                        <span>Talentia</span> <span>~ Workshops</span>
+                      </h3>
+                    </div>
 
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {workshopList
+                        .filter((e) => !selectedDate || e.date === selectedDate || e.date === null)
+                        .map((e, i) => {
+                          const baseIdx = intraeventList.length + interEventList.length + i;
+                          const isVisible = visibleCards.has(baseIdx);
+
+                          return (
+                            <div
+                              key={baseIdx}
+                              ref={(el) => {
+                                cardRefs.current[baseIdx] = el;
+                              }}
+                              data-index={baseIdx}
+                              className={[
+                                "relative rounded-2xl overflow-hidden border bg-black",
+                                "border-yellow-600/20",
+                                "transition-all duration-700 ease-out will-change-transform",
+                                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
+                              ].join(" ")}
+                              style={{ transitionDelay: `${Math.min(baseIdx, 18) * 90}ms` }}
+                            >
+                              <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300">
+                                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                                  <img
+                                    src={e.image}
+                                    alt={e.title}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    onError={(ev) => (ev.currentTarget.style.display = "none")}
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+                                </div>
+                              </div>
+
+                              <div className="p-5">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div>
+                                    <h4 className="text-lg font-extrabold text-white">{e.title}</h4>
+                                    {e.date && (
+                                      <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
+                                    )}
+                                  </div>
+
+                                  <button
+                                    onClick={() => goToRegister(e.registerUrl)}
+                                    className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
+                                  >
+                                    Register <ArrowRight size={16} />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </>
+                );
+              })()}
+
+              {(() => {
+                const filtered = performingArtsList.filter(
+                  (e) => !selectedDate || e.date === selectedDate || e.date === null
+                );
+                if (filtered.length === 0) return null;
+                return (
+                  <>
+                    <div className="mt-20 mb-12">
+                      <h3 className="text-4xl md:text-5xl font-black text-center mb-12 glow-text-permanent">
+                        <span>Innovative Short Film</span> <span>/ Tribute Videos</span>
+                        <p className="text-lg md:text-xl text-yellow-400 mt-2">(Intra College Only)</p>
+                      </h3>
+                    </div>
+
+                    <div className="flex justify-center">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
+                        {performingArtsList
+                          .filter((e) => !selectedDate || e.date === selectedDate || e.date === null)
+                          .map((e, i) => {
+                            const baseIdx =
+                              intraeventList.length +
+                              interEventList.length +
+                              workshopList.length +
+                              i;
+                            const isVisible = visibleCards.has(baseIdx);
+
+                            // Staggered margin-top for masonry effect
+                            const staggerClasses = ["mt-0", "mt-0", "mt-0", "mt-0", "mt-0"];
+                            const marginClass = staggerClasses[i % staggerClasses.length];
+
+                            return (
+                              <div
+                                key={baseIdx}
+                                ref={(el) => {
+                                  cardRefs.current[baseIdx] = el;
+                                }}
+                                data-index={baseIdx}
+                                className={[
+                                  "relative rounded-2xl overflow-hidden border bg-black",
+                                  "border-yellow-600/20 hover:border-yellow-400/50",
+                                  "transition-all duration-700 ease-out will-change-transform",
+                                  "hover:shadow-lg hover:shadow-yellow-300/30",
+                                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
+                                  marginClass,
+                                ].join(" ")}
+                                style={{ transitionDelay: `${Math.min(baseIdx, 24) * 90}ms` }}
+                              >
+                                <div className="aspect-[3/4] relative rounded-3xl border-4 border-black hover:border-yellow-400 p-1 overflow-hidden transition-all duration-300 hover:scale-105">
+                                  <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                                    <img
+                                      src={e.image}
+                                      alt={e.title}
+                                      className="absolute inset-0 w-full h-full object-cover"
+                                      onError={(ev) => (ev.currentTarget.style.display = "none")}
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+                                  </div>
+                                </div>
+
+                                <div className="p-5">
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div>
+                                      <h4 className="text-lg font-extrabold text-white">{e.title}</h4>
+                                      {e.date && (
+                                        <p className="text-sm text-yellow-400/80 mt-1">{e.date}</p>
+                                      )}
+                                    </div>
+
+                                    <button
+                                      onClick={() => goToRegister(e.registerUrl)}
+                                      className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400 text-black font-bold hover:shadow-[0_0_22px_rgba(251,191,36,0.22)] transition"
+                                    >
+                                      Register <ArrowRight size={16} />
+                                    </button>
+                                  </div>
+
+                                  <p className="mt-2 text-sm text-white/60">
+                                    Click register to book your slot.
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
           </div>
         </section>
+
+       
 
         <GuestRevealCountdown />
         {/* CONTACT */}
@@ -1027,18 +1144,24 @@ useEffect(() => {
             className="max-w-7xl mx-auto text-center cursor-pointer transition-colors"
             onClick={() => navigate("/aboutus#our-team")}
           >
-            <p className="text-3xl md:text-5xl text-white/80 font-semibold mb-2 glow-text">
+            <p className="text-4xl md:text-6xl text-white/80 font-semibold mb-4 glow-text">
               Contact Us
             </p>
-            <p className="text-lg md:text-xl text-white/60 glow-text-permanent">
+            <p className="text-2xl md:text-3xl text-white/60 glow-text-permanent">
               IEF@KEC• E-Horyzon 2026
             </p>
           </div>
         </section>
 
+        {/* EHoryzon Bottom Section */}
+        <EHoryzonBottomSection />
+
         {/* CREATORS */}
         <section className="py-12 px-6 border-t border-yellow-600/20">
           <div className="max-w-7xl mx-auto text-center">
+            <p className="text-2xl md:text-3xl font-bold text-yellow-400 mb-6 glow-text-permanent">
+              Developers
+            </p>
             <p 
               className="text-1xl md:text-3xl font-light bold text-white/70 font-semibold glow-text cursor-pointer"
               style={{
@@ -1046,13 +1169,10 @@ useEffect(() => {
                 letterSpacing: "0.05em",
               }}
             >
-              Abdul Sahith - AIDS , Ashifa - CSE & Harrisjayakumar - MCA 
+              Abdul Sahith - AIDS , Ashifa - CSE & Harrisjayakumar - MSE
             </p>
           </div>
         </section>
-
-        {/* EHoryzon Bottom Section */}
-        <EHoryzonBottomSection />
 
         <footer className="py-10 text-white/45">
           <div className="flex justify-between items-center px-10">

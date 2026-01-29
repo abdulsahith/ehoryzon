@@ -13,40 +13,42 @@ import heroVideo from "../assets/hero.mp4";
 import parameshwaransir from "../assets/parameshwaransir.jpeg";
 import kannansir from "../assets/kannansir.jpeg";
 import praveensir from "../assets/praveensir.jpeg";
-import ashifa from "../../public/assets/coordinatorspic/Ashifa.jpeg"
+import erkrishnan from "../assets/erkrishnan.jpeg"
+
+import kalpana from "../assets/kalpanamam.jpeg"
 
 const logos = [kec, herologo, iic, emdc];
 
 const staffData = [
   {
-    img: parameshwaransir,
+    img: erkrishnan,
     name: "Mr E R K Krishnan",
     role: "Correspondent @KEC",
-    desc: "Leading institutional vision and excellence",
+    desc: "",
   },
   {
     img: parameshwaransir,
     name: "Dr.R .Parameshwaran",
-    role: "Principal",
-    desc: "Fostering innovation and academic excellence",
+    role: "Principal @KEC",
+    desc: "",
   },
   {
     img: kannansir,
     name: "Mr.P.S.Kannan",
     role: "Executive Director @KonguTBI",
-    desc: "Driving entrepreneurship and startup ecosystem",
+    desc: "",
   },
   {
     img: praveensir,
     name: "Dr.Praveen Kumar Subramanian",
-    role: "president @KonguTBI",
-    desc: "Building bridges between innovation and industry",
+    role: "president IEF@KEC",
+    desc: "",
   },
   {
-    img: praveensir,
-    name: "Dr.Praveen Kumar Subramanian",
-    role: "president @KonguTBI",
-    desc: "Building bridges between innovation and industry",
+    img: kalpana,
+    name: "Mrs. R. Kalpana ",
+    role: "Coordnator Emdc@KEC",
+    desc: "",
   },
 ];
 
@@ -114,7 +116,7 @@ const teamMembers = [
     id: 7,
     name: "K Ashifa ",
     designation: "Media Team Head",
-    photo: ashifa,
+    photo: "/assets/coordinatorspic/Ashifa.jpeg",
     linkedin: "https://www.linkedin.com/in/ashifa-k786/",
     whatsapp: "https://wa.me/919344939976",
   },
